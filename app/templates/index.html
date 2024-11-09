@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Triagem de Pacientes - Classificação NANDA</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Arquivo de estilo personalizado -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="bg-light text-dark">
+    <div class="container mt-5">
+        <h1 class="text-primary">Triagem de Pacientes</h1>
+        <form id="formTriagem" method="post" action="/triagem" class="needs-validation" novalidate>
+            <div class="mb-3">
+                <label for="nome" class="form-label">Nome:</label>
+                <input type="text" class="form-control" id="nome" name="nome" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="idade" class="form-label">Idade:</label>
+                <input type="number" class="form-control" id="idade" name="idade" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="sintomas" class="form-label">Sintomas:</label>
+                <textarea id="sintomas" name="sintomas" class="form-control" rows="4" required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Enviar para Triagem</button>
+        </form>
+
+        <div id="resultado" class="mt-4 text-secondary"></div>
+    </div>
+
+    <!-- JavaScript do Bootstrap e Formulário -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const form = document.getElementById("formTriagem");
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const formData = new FormData(form);
+    
+            try {
+                const response = await fetch("/triagem", {
+                    method: "POST",
+                    body: formData
+                });
+                const result = await response.json();
+                document.getElementById("resultado").innerHTML = `
+                    <h4 class="text-primary">Resultado da Triagem:</h4>
+                    <p><strong>Prioridade:</strong> ${result.prioridade}</p>
+                `;
+            } catch (error) {
+                console.error("Erro ao processar a triagem:", error);
+                document.getElementById("resultado").innerText = "Erro ao processar a triagem. Tente novamente.";
+            }
+        });
+    </script>
+    
+</body>
+</html>

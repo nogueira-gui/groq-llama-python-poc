@@ -1,0 +1,23 @@
+/* Define as cores personalizadas */
+body {
+    background-color: #f7f9fc; /* Background claro que combina com primary e secondary */
+    color: #22283e; /* Cor de fonte principal */
+}
+
+.text-primary {
+    color: #015089 !important; /* Azul principal */
+}
+
+.text-secondary {
+    color: #4c6385 !important; /* Azul secundário */
+}
+
+.btn-primary {
+    background-color: #015089;
+    border-color: #015089;
+}
+
+.btn-primary:hover {
+    background-color: #013b6a;
+    border-color: #013b6a;
+}
