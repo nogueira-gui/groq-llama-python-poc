@@ -36,72 +36,97 @@ def run_llm_model(patient_context_prompt):
     }
 
 def generate_prompt_from_vitals_form(request):
-    heart_rate = request.form.get('heart_rate', 'Not provided')
-    blood_pressure = request.form.get('blood_pressure', 'Not provided')
-    temperature = request.form.get('temperature', 'Not provided')
-    respiratory_rate = request.form.get('respiratory_rate', 'Not provided')
-    glucose_level = request.form.get('glucose_level', 'Not provided')
-    iv_access = request.form.get('iv_access', 'Not provided')
-    cardiac_arrest = request.form.get('cardiac_arrest', 'Not provided')
-    fractures = request.form.get('fractures', 'Not provided')
-    external_bleeding = request.form.get('external_bleeding', 'Not provided')
-    return (
-        f"Patient with vital signs: "
-        f"Heart rate: {heart_rate}, Blood pressure: {blood_pressure}, "
-        f"Temperature: {temperature}, Respiratory rate: {respiratory_rate}, "
-        f"Glucose level: {glucose_level}, IV access: {iv_access}, "
-        f"Cardiac arrest: {cardiac_arrest}, Fractures: {fractures}, "
-        f"External bleeding: {external_bleeding}."
-    )
+    heart_rate = request.form.get('heart_rate')
+    blood_pressure = request.form.get('blood_pressure')
+    temperature = request.form.get('temperature')
+    respiratory_rate = request.form.get('respiratory_rate')
+    glucose_level = request.form.get('glucose_level')
+    iv_access = request.form.get('iv_access')
+    cardiac_arrest = request.form.get('cardiac_arrest')
+    fractures = request.form.get('fractures')
+    external_bleeding = request.form.get('external_bleeding')
+
+    prompt = f"Patient with vital signs: \n"
+    if heart_rate:
+        prompt += f"Heart rate: {heart_rate}, \n"
+    if blood_pressure:
+        prompt += f"Blood pressure: {blood_pressure}, \n"
+    if temperature:
+        prompt += f"Temperature: {temperature},\n"
+    if respiratory_rate:
+        prompt += f"Respiratory rate: {respiratory_rate}, \n"
+    if glucose_level:
+        prompt += f"Glucose level: {glucose_level},\n"
+    if iv_access:
+        prompt += f"IV access: {iv_access}, \n"
+    if cardiac_arrest:
+        prompt += f"Cardiac arrest: {cardiac_arrest},\n" 
+    if fractures:
+        prompt += f"Fractures: {fractures}, \n"
+    if external_bleeding:
+        prompt += f"External bleeding: {external_bleeding}."
+    
+    return prompt
 
 def generate_prompt_from_anamnesis_form(request):
     if request.method == 'POST':
-        # Personal Data
         name = request.form['nome']
         age = request.form['idade']
 
-        # Vital Signs
-        vital_data = {
-            'blood_pressure': request.form['blood_pressure'],
-            'heart_rate': request.form['heart_rate'],
-            'respiratory_rate': request.form['respiratory_rate'],
-            'glucose_level': request.form['glucose_level'],
-            'fever': request.form.get('febre', 'no')
-        }
+        vital_data = {}
+        if request.form['blood_pressure']:
+            vital_data['blood_pressure'] = request.form['blood_pressure']
+        if request.form['heart_rate']:
+            vital_data['heart_rate'] = request.form['heart_rate']
+        if request.form['respiratory_rate']:
+            vital_data['respiratory_rate'] = request.form['respiratory_rate']
+        if request.form['glucose_level']:
+            vital_data['glucose_level'] = request.form['glucose_level']
+        if request.form['fever']:
+            vital_data['fever'] = request.form['fever']
 
-        # Medical History
-        medical_history = {
-            'chronic_diseases': request.form['doencas_cronicas'],
-            'medications': request.form['medicamentos'],
-            'allergies': request.form['alergias'],
-            'pain_location': request.form['local_dor']
-        }
+        medical_history = {}
+        if request.form['doencas_cronicas']:
+            medical_history['chronic_diseases'] = request.form['doencas_cronicas']
+        if request.form['medicamentos']:
+            medical_history['medications'] = request.form['medicamentos']
+        if request.form['alergias']:
+            medical_history['allergies'] = request.form['alergias']
+        if request.form['local_dor']:
+            medical_history['pain_location'] = request.form['local_dor']
 
-        # Difficulty in
-        difficulties = {
-            'breathing': request.form.get('respirar', 'no'),
-            'swallowing': request.form.get('engolir', 'no'),
-            'moving': request.form.get('movimentar', 'no'),
-            'eating': request.form.get('alimentar', 'no'),
-            'hydrating': request.form.get('hidratar', 'no'),
-            'urination': request.form.get('miccao', 'no'),
-            'bowel_movement': request.form.get('evacuacao', 'no')
-        }
+        difficulties = {}
+        if request.form.get('respirar'):
+            difficulties['breathing'] = request.form['respirar']
+        if request.form.get('engolir'):
+            difficulties['swallowing'] = request.form['engolir']
+        if request.form.get('movimentar'):
+            difficulties['moving'] = request.form['movimentar']
+        if request.form.get('alimentar'):
+            difficulties['eating'] = request.form['alimentar']
+        if request.form.get('hidratar'):
+            difficulties['hydrating'] = request.form['hidratar']
+        if request.form.get('miccao'):
+            difficulties['urination'] = request.form['miccao']
+        if request.form.get('evacuacao'):
+            difficulties['bowel_movement'] = request.form['evacuacao']
 
-        # Signs of
-        signs = {
-            'anxiety': request.form.get('ansiedade', 'no'),
-            'stress': request.form.get('estresse', 'no'),
-            'depression': request.form.get('depressao', 'no')
-        }
+        signs = {}
+        if request.form.get('ansiedade'):
+            signs['anxiety'] = request.form.get('ansiedade')
+        if request.form.get('estresse'):
+            signs['stress'] = request.form.get('estresse')
+        if request.form.get('depressao'):
+            signs['depression'] = request.form.get('depressao')
 
-        return f'''
+        prompt = f'''
         Patient: {name}, {age} years old.
         Vital signs: {vital_data}.
         Medical history: {medical_history}.
         Difficulties: {difficulties}.
         Signs: {signs}.
         '''
+        return prompt
 
 @app.route('/result', methods=['GET', 'POST'])
 def result_screen():
