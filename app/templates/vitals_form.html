@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency - Vital Signs</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<style>
+        /* Custom CSS for UX improvement */
+        body {
+            background-color: #f4f6f9;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 600px;
+            margin-top: 50px;
+        }
+
+        h1 {
+            color: #FFFF;
+            font-size: 24px;
+            font-family:Arial, Helvetica, sans-serif;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-control {
+            border-radius: 5px;
+            box-shadow: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #0066cc;
+            box-shadow: 0 0 5px rgba(0, 102, 204, 0.5);
+        }
+
+        .btn {
+            background-color: #0066cc;
+            color: white;
+            font-size: 16px;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #004d99;
+        }
+
+        .btn:focus {
+            box-shadow: none;
+        }
+
+        .mb-3 {
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            padding: 10px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin-top: 20px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+        }
+
+        /* Focus state for inputs */
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #0066cc;
+            box-shadow: 0 0 5px rgba(0, 102, 204, 0.3);
+        }
+        .form-check-input{
+            margin-left: 5px;
+        }
+    </style>
+    
+</style>
+<body>
+    <header class="bg-primary text-white text-center py-3">
+        <h1>Emergency - Vital Signs</h1>
+    </header>
+
+    <div class="container my-5">
+        <form id="vitals_form" action="{{ url_for('result_screen') }}" method="POST">
+            <input type="hidden" name="form_id" value="vitals_form">
+            <div class="form-group">
+                <label for="blood_pressure">Blood Pressure:</label>
+                <input type="text" class="form-control" id="blood_pressure" name="blood_pressure" required>
+            </div>
+
+            <div class="form-group">
+                <label for="heart_rate">Heart Rate:</label>
+                <input type="text" class="form-control" id="heart_rate" name="heart_rate" required>
+            </div>
+
+            <label for="respiratory_rate">Saturation:</label>
+            <input type="number" class="form-control" id="respiratory_rate" name="respiratory_rate" required>
+            <br><br>
+
+            <fieldset class="border p-3">
+                <legend class="w-auto">Emergency Conditions</legend>
+
+                <div class="form-check">
+                    <label class="form-check-label" for="iv_access">
+                        IV Access:
+                    </label>
+                    <input class="form-check-input" type="checkbox" id="iv_access" name="iv_access" value="yes">
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label" for="cardiac_arrest">
+                        Cardiac Arrest:
+                    </label>
+                    <input class="form-check-input" type="checkbox" id="cardiac_arrest" name="cardiac_arrest" value="yes">
+                </div>
+
+                <div class="form-check">
+                    <label class="form-check-label" for="fractures">
+                        Fractures:
+                    </label>
+                    <input class="form-check-input" type="checkbox" id="fractures" name="fractures" value="yes">
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label" for="external_bleeding">
+                        External Bleeding:
+                    </label>
+                   <input class="form-check-input" type="checkbox" id="external_bleeding" name="external_bleeding" value="yes">
+                </div>
+            </fieldset>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-success">Submit</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

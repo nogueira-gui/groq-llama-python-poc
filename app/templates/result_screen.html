@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical History Results</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f6f9;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 600px;
+            margin-top: 50px;
+        }
+
+        h1 {
+            color: #0066cc;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background-color: #0066cc;
+            color: white;
+            font-size: 16px;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #004d99;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Medical History Results</h1>
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <th>Priority</th>
+                    <td>{{ priority }}</td>
+                </tr>
+                <tr>
+                    <th>Assessment</th>
+                    <td>{{ result }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- Button to go back to the main page -->
+        <a href="/" class="btn">Go Back to Home</a>
+    </div>
+</body>
+</html>
