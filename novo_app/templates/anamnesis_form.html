@@ -24,6 +24,7 @@
         h1 {
             color: #0066cc;
             font-size: 24px;
+            font-weight: bold;
             text-align: center;
             margin-bottom: 20px;
         }
@@ -90,7 +91,7 @@
             <br>
             <div class="form-group">
                 <label for="cep">CEP</label>
-                <input type="text" class="form-control" id="cep" name="cep" required>
+                <input type="text" class="form-control" id="cep" name="cep">
             </div>
             <br>
             
@@ -113,12 +114,12 @@
             <br>
             <div class="form-group">
                 <label for="glucose_level">Nível de Glicose:</label>
-                <input type="text" class="form-control" id="glucose_level" name="glucose_level" required>
+                <input type="number" class="form-control" id="glucose_level" name="glucose_level" required>
             </div>
             <br>
             <div class="form-group">
-                <label for="febre">Febre:</label>
-                <input type="checkbox" class="form-check-label" id="febre" value="yes" name="febre">
+                <label for="febre">Temperatura</label>
+                <input type="number" class="form-control" id="febre" value="yes" name="febre">
             </div>
             <br>
 
@@ -145,6 +146,63 @@
                     <input type="text" class="form-control" id="local_dor" name="local_dor" required>
                 </div>
                 <br>
+                <div class="form-group">
+                    <legend>Relata dificuldade em:</legend>
+                    <label for="respirar">Respirar</label>
+                    <input type="checkbox" class="form-check-label" id="respirar" value="yes" name="respirar">
+                    <br><br>
+                </div>
+                <div class="form-group">
+                    <label for="engolir">Engolir</label>
+                    <input type="checkbox" class="form-check-label" id="engolir" value="yes" name="engolir">
+                    <br><br>
+                </div>
+                <div class="form-group">
+                    <label for="movimentar">Movimentar</label>
+                    <input type="checkbox" class="form-check-label" id="movimentar" value="yes" name="movimentar">
+                    <br><br>
+                </div>
+                
+                <div class="form-group">
+                    <label for="alimentar">Alimentar</label>
+                    <input type="checkbox" value="yes" class="form-check-label" id="alimentar" name="alimentar" required>
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="hidratar">Hidratar</label>
+                    <input type="checkbox" value="yes" class="form-check-label" id="hidratar" name="hidratar" required>
+                </div>
+                <br>
+                
+                <div class="form-group">
+                    <label for="miccao">Micção</label>
+                    <input type="checkbox" value="yes" class="form-check-label" id="miccao" name="miccao" required>
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="evacuacao">Evacuação</label>
+                    <input type="checkbox" value="yes" class="form-check-label" id="evacuacao" name="evacuacao" required>
+                </div>
+                <br>
+                <div class="form-group">
+                <legend>Apresenta Sinais de:</legend>
+                    <label for="ansiedade">Ansiedade</label>
+                    <input type="checkbox" value="yes" class="form-check-label" id="ansiedade" name="ansiedade" required>
+                </div>
+                <br>
+                
+                <div class="form-group">
+                    <label for="estresse">Estresse</label>
+                    <input type="checkbox" value="yes" class="form-check-label" id="estresse" name="estresse" required>
+                </div>
+                <br>
+                
+                <div class="form-group">
+                    <label for="depressao">Depressão</label>
+                    <input type="checkbox" value="yes" class="form-check-label" id="depressao" name="depressao" required>
+                </div>
+                <br>
+                
             </fieldset>
 
             <!-- Botão de Submit -->

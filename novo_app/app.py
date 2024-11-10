@@ -36,20 +36,51 @@ def emergency():
         else:
             return redirect(url_for('anamnesis'))
 
-@app.route('/anamnesis', methods=['GET', 'POST'])
+@app.route('/anamnesis', methods=['GET','POST'])
 def anamnesis():
     if request.method == 'POST':
-        # Captura os dados da anamnese
-        patient_history = request.form.get('patient_history')
-        current_symptoms = request.form.get('current_symptoms')
-        medications = request.form.get('medications')
-        allergies = request.form.get('allergies')
-        other_conditions = request.form.get('other_conditions')
+        # Dados Pessoais
+        nome = request.form['nome']
+        idade = request.form['idade']
+        cep = request.form['cep']
 
-        # Process or store the anamnesis data here
-        return redirect(url_for('home'))  # Redireciona para a tela inicial ou outra página
+        # Sinais Vitais
+        blood_pressure = request.form['blood_pressure']
+        heart_rate = request.form['heart_rate']
+        respiratory_rate = request.form['respiratory_rate']
+        glucose_level = request.form['glucose_level']
+        febre = request.form.get('febre', 'no')  # Default is 'no' if not checked
 
+        # História Médica
+        doencas_cronicas = request.form['doencas_cronicas']
+        medicamentos = request.form['medicamentos']
+        alergias = request.form['alergias']
+        local_dor = request.form['local_dor']
+
+        # Dificuldade em
+        respirar = request.form.get('respirar', 'no')
+        engolir = request.form.get('engolir', 'no')
+        movimentar = request.form.get('movimentar', 'no')
+        alimentar = request.form.get('alimentar', 'no')
+        hidratar = request.form.get('hidratar', 'no')
+        miccao = request.form.get('miccao', 'no')
+        evacuacao = request.form.get('evacuacao', 'no')
+
+        # Sinais de
+        ansiedade = request.form.get('ansiedade', 'no')
+        estresse = request.form.get('estresse', 'no')
+        depressao = request.form.get('depressao', 'no')
+
+        # Aqui você pode fazer o que quiser com os dados, como salvar no banco de dados ou processar.
+
+        return render_template('anamnesis_form.html', nome=nome, idade=idade, cep=cep,
+                               blood_pressure=blood_pressure, heart_rate=heart_rate,
+                               respiratory_rate=respiratory_rate, glucose_level=glucose_level,
+                               febre=febre, doencas_cronicas=doencas_cronicas, medicamentos=medicamentos,
+                               alergias=alergias, local_dor=local_dor, respirar=respirar,
+                               engolir=engolir, movimentar=movimentar, alimentar=alimentar,
+                               hidratar=hidratar, miccao=miccao, evacuacao=evacuacao,
+                               ansiedade=ansiedade, estresse=estresse, depressao=depressao)
     return render_template('anamnesis_form.html')
-
 if __name__ == '__main__':
     app.run(debug=True)
