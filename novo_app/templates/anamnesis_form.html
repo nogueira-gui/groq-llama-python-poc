@@ -75,32 +75,80 @@
     <div class="container">
         <h1>Anamnese Completa</h1>
         <form action="{{ url_for('anamnesis') }}" method="POST">
-            <div class="mb-3">
-                <label for="patient_history" class="form-label">Histórico Médico:</label>
-                <textarea id="patient_history" name="patient_history" class="form-control" rows="4" required></textarea>
-            </div>
 
-            <div class="mb-3">
-                <label for="current_symptoms" class="form-label">Sintomas Atuais:</label>
-                <textarea id="current_symptoms" name="current_symptoms" class="form-control" rows="4" required></textarea>
+            <!-- Dados Pessoais -->
+            <legend>Dados Pessoais</legend>
+            <div class="form-group">
+                <label for="nome">Nome</label>
+                <input type="text" class="form-control" id="nome" name="nome" required>
             </div>
-
-            <div class="mb-3">
-                <label for="medications" class="form-label">Medicações em Uso:</label>
-                <textarea id="medications" name="medications" class="form-control" rows="4" required></textarea>
+            <br>
+            <div class="form-group">
+                <label for="idade">Idade</label>
+                <input type="text" class="form-control" id="idade" name="idade" required>
             </div>
-
-            <div class="mb-3">
-                <label for="allergies" class="form-label">Alergias Conhecidas:</label>
-                <textarea id="allergies" name="allergies" class="form-control" rows="4" required></textarea>
+            <br>
+            <div class="form-group">
+                <label for="cep">CEP</label>
+                <input type="text" class="form-control" id="cep" name="cep" required>
             </div>
-
-            <div class="mb-3">
-                <label for="other_conditions" class="form-label">Outras Condições de Saúde:</label>
-                <textarea id="other_conditions" name="other_conditions" class="form-control" rows="4"></textarea>
+            <br>
+            
+            <!-- Sinais Vitais -->
+            <legend>Sinais Vitais</legend>
+            <div class="form-group">
+                <label for="blood_pressure">Pressão Arterial:</label>
+                <input type="text" class="form-control" id="blood_pressure" name="blood_pressure" required>
             </div>
+            <br>
+            <div class="form-group">
+                <label for="heart_rate">Frequência Cardíaca:</label>
+                <input type="text" class="form-control" id="heart_rate" name="heart_rate" required>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="respiratory_rate">Saturação:</label>
+                <input type="number" class="form-control" id="respiratory_rate" name="respiratory_rate" required>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="glucose_level">Nível de Glicose:</label>
+                <input type="text" class="form-control" id="glucose_level" name="glucose_level" required>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="febre">Febre:</label>
+                <input type="checkbox" class="form-check-label" id="febre" value="yes" name="febre">
+            </div>
+            <br>
 
-            <button type="submit" class="btn w-100">Enviar</button>
+            <!-- Histórico -->
+            <fieldset>
+                <legend>História Médica</legend>
+                <div class="form-group">
+                    <label for="doencas_cronicas">Possui doença crônica (diabetes, hipertensão, etc.)?</label>
+                    <input type="text" class="form-control" id="doencas_cronicas" name="doencas_cronicas" required>
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="medicamentos">Utiliza medicamentos contínuos, quais?</label>
+                    <input type="text" class="form-control" id="medicamentos" name="medicamentos" required>
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="alergias">Possui alergias? Se sim, quais?</label>
+                    <input type="text" class="form-control" id="alergias" name="alergias" required>
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="local_dor">Queixa de dor ou desconforto em algum lugar do corpo?</label>
+                    <input type="text" class="form-control" id="local_dor" name="local_dor" required>
+                </div>
+                <br>
+            </fieldset>
+
+            <!-- Botão de Submit -->
+            <button type="submit" class="btn">Enviar</button>
         </form>
     </div>
 </body>
