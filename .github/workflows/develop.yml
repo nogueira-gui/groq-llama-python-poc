@@ -1,0 +1,20 @@
+name: "DEV DEPLOY"
+
+on:
+    push:
+        branches:
+          - develop
+
+permissions:
+    contents: read
+    id-token: write
+
+jobs:
+    terraform:
+        uses: ./.github/workflows/terraform.yml
+        with:
+            environment: 'dev'
+            aws-assume-role-arn: 'arn:aws:iam::698974420629:role/github-actions-pipeline'
+            aws-region: 'us-east-1'
+            aws-statefile-s3-bucket: 'nogueira-gui-terraform-state-bucket'
+            aws-lock-dynamodb-table: 'pipeline-nogueira-gui-terraform-lock'
