@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Anamnesis</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f6f9;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 600px;
+            margin-top: 50px;
+        }
+
+        h1 {
+            color: #0066cc;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-control {
+            border-radius: 5px;
+            box-shadow: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #0066cc;
+            box-shadow: 0 0 5px rgba(0, 102, 204, 0.5);
+        }
+
+        .btn {
+            background-color: #0066cc;
+            color: white;
+            font-size: 16px;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #004d99;
+        }
+
+        .btn:focus {
+            box-shadow: none;
+        }
+
+        .mb-3 {
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Complete Anamnesis</h1>
+        <form id="anamnesis_form" action="{{ url_for('result_screen') }}" method="POST">
+            <input type="hidden" name="form_id" value="anamnesis_form">
+            <!-- Personal Data -->
+            <legend>Personal Data</legend>
+            <div class="form-group">
+                <label for="nome">Name</label>
+                <input type="text" class="form-control" id="nome" name="nome" required>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="idade">Age</label>
+                <input type="text" class="form-control" id="idade" name="idade" required>
+            </div>
+            <br>
+            
+            <!-- Vital Signs -->
+            <legend>Vital Signs</legend>
+            <div class="form-group">
+                <label for="blood_pressure">Blood Pressure:</label>
+                <input type="text" class="form-control" id="blood_pressure" name="blood_pressure" required>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="heart_rate">Heart Rate:</label>
+                <input type="text" class="form-control" id="heart_rate" name="heart_rate" required>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="respiratory_rate">Oxygen Saturation:</label>
+                <input type="number" class="form-control" id="respiratory_rate" name="respiratory_rate" required>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="glucose_level">Glucose Level:</label>
+                <input type="number" value="0" class="form-control" id="glucose_level" name="glucose_level">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="febre">Temperature</label>
+                <input type="number" class="form-control" id="febre" value="yes" name="febre">
+            </div>
+            <br>
+
+            <!-- Medical History -->
+            <fieldset>
+                <legend>Medical History</legend>
+                <div class="form-group">
+                    <label for="doencas_cronicas">Do you have any chronic diseases (diabetes, hypertension, etc.)?</label>
+                    <input type="text" class="form-control" id="doencas_cronicas" name="doencas_cronicas">
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="medicamentos">Do you take any ongoing medications? If yes, which ones?</label>
+                    <input type="text" class="form-control" id="medicamentos" name="medicamentos">
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="alergias">Do you have any allergies? If yes, which ones?</label>
+                    <input type="text" class="form-control" id="alergias" name="alergias">
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="local_dor">Do you have any pain or discomfort anywhere in your body?</label>
+                    <input type="text" class="form-control" id="local_dor" name="local_dor">
+                </div>
+                <br>
+                <div class="form-group">
+                    <legend>Do you have difficulty in:</legend>
+                    <label for="respirar">Breathing</label>
+                    <input type="checkbox" class="form-check-label" id="respirar" value="yes" name="respirar">
+                    <br><br>
+                </div>
+                <div class="form-group">
+                    <label for="engolir">Swallowing</label>
+                    <input type="checkbox" class="form-check-label" id="engolir" value="yes" name="engolir">
+                    <br><br>
+                </div>
+                <div class="form-group">
+                    <label for="movimentar">Moving</label>
+                    <input type="checkbox" class="form-check-label" id="movimentar" value="yes" name="movimentar">
+                    <br><br>
+                </div>
+                
+                <div class="form-group">
+                    <label for="alimentar">Eating</label>
+                    <input type="checkbox" value="yes" class="form-check-label" id="alimentar" name="alimentar">
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="hidratar">Hydrating</label>
+                    <input type="checkbox" value="yes" class="form-check-label" id="hidratar" name="hidratar">
+                </div>
+                <br>
+                
+                <div class="form-group">
+                    <label for="miccao">Urination</label>
+                    <input type="checkbox" value="yes" class="form-check-label" id="miccao" name="miccao">
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="evacuacao">Bowel Movements</label>
+                    <input type="checkbox" value="yes" class="form-check-label" id="evacuacao" name="evacuacao">
+                </div>
+                <br>
+                <div class="form-group">
+                <legend>Signs of:</legend>
+                    <label for="ansiedade">Anxiety</label>
+                    <input type="checkbox" value="yes" class="form-check-label" id="ansiedade" name="ansiedade">
+                </div>
+                <br>
+                
+                <div class="form-group">
+                    <label for="estresse">Stress</label>
+                    <input type="checkbox" value="yes" class="form-check-label" id="estresse" name="estresse">
+                </div>
+                <br>
+                
+                <div class="form-group">
+                    <label for="depressao">Depression</label>
+                    <input type="checkbox" value="yes" class="form-check-label" id="depressao" name="depressao">
+                </div>
+                <br>
+                
+            </fieldset>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn">Submit</button>
+        </form>
+    </div>
+</body>
+</html>
