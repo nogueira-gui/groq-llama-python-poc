@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emergência - Sinais Vitais</title>
+    <title>Emergency - Vital Signs</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
@@ -100,69 +100,61 @@
 </style>
 <body>
     <header class="bg-primary text-white text-center py-3">
-        <h1>Emergência - Sinais Vitais</h1>
+        <h1>Emergency - Vital Signs</h1>
     </header>
 
     <div class="container my-5">
-        <form action="{{ url_for('emergency') }}" method="POST">
+        <form id="vitals_form" action="{{ url_for('result_screen') }}" method="POST">
+            <input type="hidden" name="form_id" value="vitals_form">
             <div class="form-group">
-                <label for="blood_pressure">Pressão Arterial:</label>
+                <label for="blood_pressure">Blood Pressure:</label>
                 <input type="text" class="form-control" id="blood_pressure" name="blood_pressure" required>
             </div>
 
             <div class="form-group">
-                <label for="heart_rate">Frequência Cardíaca:</label>
+                <label for="heart_rate">Heart Rate:</label>
                 <input type="text" class="form-control" id="heart_rate" name="heart_rate" required>
             </div>
 
-            <label for="respiratory_rate">Saturação:</label>
-            <input type="number"  class="form-control" id="respiratory_rate"  name="respiratory_rate" required>
+            <label for="respiratory_rate">Saturation:</label>
+            <input type="number" class="form-control" id="respiratory_rate" name="respiratory_rate" required>
             <br><br>
 
-            <!--<div class="form-group">
-                <label for="glucose_level">Nível de Glicose:</label>
-                <input type="text" class="form-control" id="glucose_level" name="glucose_level" required>
-            </div>-->
-
             <fieldset class="border p-3">
-                <legend class="w-auto">Condições de Emergência</legend>
+                <legend class="w-auto">Emergency Conditions</legend>
 
                 <div class="form-check">
                     <label class="form-check-label" for="iv_access">
-                        Acesso IV:
+                        IV Access:
                     </label>
                     <input class="form-check-input" type="checkbox" id="iv_access" name="iv_access" value="yes">
-
                 </div>
                 <div class="form-check">
                     <label class="form-check-label" for="cardiac_arrest">
-                        Parada Cardíaca:
+                        Cardiac Arrest:
                     </label>
                     <input class="form-check-input" type="checkbox" id="cardiac_arrest" name="cardiac_arrest" value="yes">
-
                 </div>
 
                 <div class="form-check">
                     <label class="form-check-label" for="fractures">
-                        Fraturas:
+                        Fractures:
                     </label>
                     <input class="form-check-input" type="checkbox" id="fractures" name="fractures" value="yes">
-
                 </div>
                 <div class="form-check">
                     <label class="form-check-label" for="external_bleeding">
-                        Sangramentos Externos:
+                        External Bleeding:
                     </label>
                    <input class="form-check-input" type="checkbox" id="external_bleeding" name="external_bleeding" value="yes">
-
                 </div>
             </fieldset>
 
             <div class="text-center mt-4">
-                <button type="submit" class="btn btn-success">Enviar</button>
+                <button type="submit" class="btn btn-success">Submit</button>
             </div>
         </form>
-    </div>-->
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>

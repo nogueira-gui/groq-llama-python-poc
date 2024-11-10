@@ -8,18 +8,17 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="text-center">Status de ocorrência</h1>
+        <h1 class="text-center">Occurrence Status</h1>
         <form action="{{ url_for('emergency') }}" method="POST" class="mt-4">
             <div class="mb-3">
-                <label for="emergency" class="form-label">Selecione:</label>
+                <label for="emergency" class="form-label">Select:</label>
                 <select id="emergency" name="emergency" class="form-control">
-                    <option value="yes">Emergência</option>
-                    <option value="no">Urgência</option>
+                    <option value="yes">Emergency</option>
+                    <option value="no">Urgency</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary w-100">Enviar</button>
+            <button type="submit" class="btn btn-primary w-100">Submit</button>
         </form>
-       
     </div>
 </body>
 </html>

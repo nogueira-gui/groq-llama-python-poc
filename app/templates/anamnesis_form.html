@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anamnese Completa</title>
+    <title>Complete Anamnesis</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -74,139 +74,134 @@
 </head>
 <body>
     <div class="container">
-        <h1>Anamnese Completa</h1>
-        <form action="{{ url_for('anamnesis') }}" method="POST">
-
-            <!-- Dados Pessoais -->
-            <legend>Dados Pessoais</legend>
+        <h1>Complete Anamnesis</h1>
+        <form id="anamnesis_form" action="{{ url_for('result_screen') }}" method="POST">
+            <input type="hidden" name="form_id" value="anamnesis_form">
+            <!-- Personal Data -->
+            <legend>Personal Data</legend>
             <div class="form-group">
-                <label for="nome">Nome</label>
+                <label for="nome">Name</label>
                 <input type="text" class="form-control" id="nome" name="nome" required>
             </div>
             <br>
             <div class="form-group">
-                <label for="idade">Idade</label>
+                <label for="idade">Age</label>
                 <input type="text" class="form-control" id="idade" name="idade" required>
             </div>
             <br>
-            <div class="form-group">
-                <label for="cep">CEP</label>
-                <input type="text" class="form-control" id="cep" name="cep">
-            </div>
-            <br>
             
-            <!-- Sinais Vitais -->
-            <legend>Sinais Vitais</legend>
+            <!-- Vital Signs -->
+            <legend>Vital Signs</legend>
             <div class="form-group">
-                <label for="blood_pressure">Pressão Arterial:</label>
+                <label for="blood_pressure">Blood Pressure:</label>
                 <input type="text" class="form-control" id="blood_pressure" name="blood_pressure" required>
             </div>
             <br>
             <div class="form-group">
-                <label for="heart_rate">Frequência Cardíaca:</label>
+                <label for="heart_rate">Heart Rate:</label>
                 <input type="text" class="form-control" id="heart_rate" name="heart_rate" required>
             </div>
             <br>
             <div class="form-group">
-                <label for="respiratory_rate">Saturação:</label>
+                <label for="respiratory_rate">Oxygen Saturation:</label>
                 <input type="number" class="form-control" id="respiratory_rate" name="respiratory_rate" required>
             </div>
             <br>
             <div class="form-group">
-                <label for="glucose_level">Nível de Glicose:</label>
-                <input type="number" class="form-control" id="glucose_level" name="glucose_level" required>
+                <label for="glucose_level">Glucose Level:</label>
+                <input type="number" value="0" class="form-control" id="glucose_level" name="glucose_level">
             </div>
             <br>
             <div class="form-group">
-                <label for="febre">Temperatura</label>
+                <label for="febre">Temperature</label>
                 <input type="number" class="form-control" id="febre" value="yes" name="febre">
             </div>
             <br>
 
-            <!-- Histórico -->
+            <!-- Medical History -->
             <fieldset>
-                <legend>História Médica</legend>
+                <legend>Medical History</legend>
                 <div class="form-group">
-                    <label for="doencas_cronicas">Possui doença crônica (diabetes, hipertensão, etc.)?</label>
-                    <input type="text" class="form-control" id="doencas_cronicas" name="doencas_cronicas" required>
+                    <label for="doencas_cronicas">Do you have any chronic diseases (diabetes, hypertension, etc.)?</label>
+                    <input type="text" class="form-control" id="doencas_cronicas" name="doencas_cronicas">
                 </div>
                 <br>
                 <div class="form-group">
-                    <label for="medicamentos">Utiliza medicamentos contínuos, quais?</label>
-                    <input type="text" class="form-control" id="medicamentos" name="medicamentos" required>
+                    <label for="medicamentos">Do you take any ongoing medications? If yes, which ones?</label>
+                    <input type="text" class="form-control" id="medicamentos" name="medicamentos">
                 </div>
                 <br>
                 <div class="form-group">
-                    <label for="alergias">Possui alergias? Se sim, quais?</label>
-                    <input type="text" class="form-control" id="alergias" name="alergias" required>
+                    <label for="alergias">Do you have any allergies? If yes, which ones?</label>
+                    <input type="text" class="form-control" id="alergias" name="alergias">
                 </div>
                 <br>
                 <div class="form-group">
-                    <label for="local_dor">Queixa de dor ou desconforto em algum lugar do corpo?</label>
-                    <input type="text" class="form-control" id="local_dor" name="local_dor" required>
+                    <label for="local_dor">Do you have any pain or discomfort anywhere in your body?</label>
+                    <input type="text" class="form-control" id="local_dor" name="local_dor">
                 </div>
                 <br>
                 <div class="form-group">
-                    <legend>Relata dificuldade em:</legend>
-                    <label for="respirar">Respirar</label>
+                    <legend>Do you have difficulty in:</legend>
+                    <label for="respirar">Breathing</label>
                     <input type="checkbox" class="form-check-label" id="respirar" value="yes" name="respirar">
                     <br><br>
                 </div>
                 <div class="form-group">
-                    <label for="engolir">Engolir</label>
+                    <label for="engolir">Swallowing</label>
                     <input type="checkbox" class="form-check-label" id="engolir" value="yes" name="engolir">
                     <br><br>
                 </div>
                 <div class="form-group">
-                    <label for="movimentar">Movimentar</label>
+                    <label for="movimentar">Moving</label>
                     <input type="checkbox" class="form-check-label" id="movimentar" value="yes" name="movimentar">
                     <br><br>
                 </div>
                 
                 <div class="form-group">
-                    <label for="alimentar">Alimentar</label>
-                    <input type="checkbox" value="yes" class="form-check-label" id="alimentar" name="alimentar" required>
+                    <label for="alimentar">Eating</label>
+                    <input type="checkbox" value="yes" class="form-check-label" id="alimentar" name="alimentar">
                 </div>
                 <br>
                 <div class="form-group">
-                    <label for="hidratar">Hidratar</label>
-                    <input type="checkbox" value="yes" class="form-check-label" id="hidratar" name="hidratar" required>
-                </div>
-                <br>
-                
-                <div class="form-group">
-                    <label for="miccao">Micção</label>
-                    <input type="checkbox" value="yes" class="form-check-label" id="miccao" name="miccao" required>
-                </div>
-                <br>
-                <div class="form-group">
-                    <label for="evacuacao">Evacuação</label>
-                    <input type="checkbox" value="yes" class="form-check-label" id="evacuacao" name="evacuacao" required>
-                </div>
-                <br>
-                <div class="form-group">
-                <legend>Apresenta Sinais de:</legend>
-                    <label for="ansiedade">Ansiedade</label>
-                    <input type="checkbox" value="yes" class="form-check-label" id="ansiedade" name="ansiedade" required>
+                    <label for="hidratar">Hydrating</label>
+                    <input type="checkbox" value="yes" class="form-check-label" id="hidratar" name="hidratar">
                 </div>
                 <br>
                 
                 <div class="form-group">
-                    <label for="estresse">Estresse</label>
-                    <input type="checkbox" value="yes" class="form-check-label" id="estresse" name="estresse" required>
+                    <label for="miccao">Urination</label>
+                    <input type="checkbox" value="yes" class="form-check-label" id="miccao" name="miccao">
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="evacuacao">Bowel Movements</label>
+                    <input type="checkbox" value="yes" class="form-check-label" id="evacuacao" name="evacuacao">
+                </div>
+                <br>
+                <div class="form-group">
+                <legend>Signs of:</legend>
+                    <label for="ansiedade">Anxiety</label>
+                    <input type="checkbox" value="yes" class="form-check-label" id="ansiedade" name="ansiedade">
                 </div>
                 <br>
                 
                 <div class="form-group">
-                    <label for="depressao">Depressão</label>
-                    <input type="checkbox" value="yes" class="form-check-label" id="depressao" name="depressao" required>
+                    <label for="estresse">Stress</label>
+                    <input type="checkbox" value="yes" class="form-check-label" id="estresse" name="estresse">
+                </div>
+                <br>
+                
+                <div class="form-group">
+                    <label for="depressao">Depression</label>
+                    <input type="checkbox" value="yes" class="form-check-label" id="depressao" name="depressao">
                 </div>
                 <br>
                 
             </fieldset>
 
-            <!-- Botão de Submit -->
-            <button type="submit" class="btn">Enviar</button>
+            <!-- Submit Button -->
+            <button type="submit" class="btn">Submit</button>
         </form>
     </div>
 </body>
