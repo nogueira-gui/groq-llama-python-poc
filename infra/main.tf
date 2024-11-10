@@ -31,7 +31,6 @@ resource "aws_security_group" "securitygroup" {
 resource "aws_instance" "ec2" {
   ami                    = "ami-0c101f26f147fa7fd"
   instance_type          = "t2.nano"
-  key_name               = aws_key_pair.keypair.key_name
   user_data              = file("user_data.sh")
   vpc_security_group_ids = ["${aws_security_group.securitygroup.id}"]
 }
