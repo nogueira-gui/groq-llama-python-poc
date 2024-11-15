@@ -18,3 +18,7 @@ jobs:
             aws-region: 'us-east-1'
             aws-statefile-s3-bucket: 'nogueira-gui-terraform-state-bucket'
             aws-lock-dynamodb-table: 'pipeline-nogueira-gui-terraform-lock'
+    buildrun:
+        uses: ./.github/workflows/buildrun.yml
+        with:
+            environment: 'dev'

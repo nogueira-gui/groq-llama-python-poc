@@ -6,4 +6,4 @@ yum install -y docker
 service docker start
 usermod -a -G docker ec2-user
 
-docker run -p 80:5000 hackathon-nanda/triagem-facil-web
+docker run -p 80:5000 hackathon/triagem_facil_web:latest
