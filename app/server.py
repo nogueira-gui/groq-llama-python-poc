@@ -146,7 +146,11 @@ def check_response_correctness(stage_id, response_text):
 
 @app.route("/speak", methods=["POST"])
 def text_to_speech():
-    audio = eleven_labs_client.text_to_speech.convert_as_stream(
+    audio = speech_with_eleven_labs(request.form.get('message'))
+    return Response(audio, mimetype="audio/wav")
+
+def speech_with_eleven_labs(text):
+    return eleven_labs_client.text_to_speech.convert_as_stream(
         voice_id="FGY2WhTYpPnrIDTdsKH5",
         optimize_streaming_latency="0",
         output_format="mp3_22050_32",
@@ -157,8 +161,6 @@ def text_to_speech():
             style=0.2,
         ),
     )
-
-    return Response(audio, mimetype="audio/wav")
 
 
 if __name__ == '__main__':
