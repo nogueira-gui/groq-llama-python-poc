@@ -25,5 +25,5 @@ jobs:
             - name: Push Docker Image to Registry
               run: |
                 echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-                docker tag triagem_facil_web:latest hackathon/triagem_facil_web:latest
-                docker push hackathon/triagem_facil_web:latest
+                docker tag triagem_facil_web:latest ninjadexter/triagem_facil_web:latest
+                docker push ninjadexter/triagem_facil_web:latest
