@@ -20,5 +20,9 @@ jobs:
             aws-lock-dynamodb-table: 'pipeline-nogueira-gui-terraform-lock'
     buildrun:
         uses: ./.github/workflows/buildrun.yml
+        needs: terraform
         with:
             environment: 'dev'
+        secrets:
+            DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+            DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
