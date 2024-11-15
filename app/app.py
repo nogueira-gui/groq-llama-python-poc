@@ -15,6 +15,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 load_dotenv()
 API_KEY = os.getenv('API_KEY')
+print(f"API KEY: {API_KEY}")
 
 
 eleven_labs_client = ElevenLabs(
