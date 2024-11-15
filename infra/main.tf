@@ -4,7 +4,7 @@ provider "aws" {
 
 resource "aws_security_group" "securitygroup" {
   name        = "ec2-securitygroup"
-  description = "Ingress Http and SSH and Egress to anywhere "
+  description = "Ingress Http and SSH and Egress to anywhere"
 
   ingress {
     from_port   = 80
