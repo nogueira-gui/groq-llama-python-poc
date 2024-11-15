@@ -1,3 +1,4 @@
 flask
 groq
 python-dotenv
+elevenlabs
