@@ -3,3 +3,4 @@ groq
 python-dotenv
 elevenlabs
 openai
+flask_cors
