@@ -41,6 +41,6 @@ data "aws_security_group" "existing_sg" {
 #   vpc_security_group_ids = [data.aws_security_group.existing_sg.id]
 # }
 
-output "public_ip" {
-  value = aws_instance.ec2.public_ip
-}
+# output "public_ip" {
+#   value = aws_instance.ec2.public_ip
+# }
