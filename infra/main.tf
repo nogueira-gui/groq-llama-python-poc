@@ -34,13 +34,13 @@ data "aws_security_group" "existing_sg" {
 #   }
 # }
 
-# resource "aws_instance" "ec2" {
-#   ami                    = "ami-012967cc5a8c9f891"
-#   instance_type          = "t2.micro"
-#   user_data              = file("user_data.sh")
-#   vpc_security_group_ids = [data.aws_security_group.existing_sg.id]
-# }
+resource "aws_instance" "ec2" {
+  ami                    = "ami-012967cc5a8c9f891"
+  instance_type          = "t2.micro"
+  user_data              = file("user_data.sh")
+  vpc_security_group_ids = [data.aws_security_group.existing_sg.id]
+}
 
-# output "public_ip" {
-#   value = aws_instance.ec2.public_ip
-# }
+output "public_ip" {
+  value = aws_instance.ec2.public_ip
+}
