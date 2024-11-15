@@ -15,8 +15,6 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 load_dotenv()
 API_KEY = os.getenv('API_KEY')
-print(f"API KEY: {API_KEY}")
-
 
 eleven_labs_client = ElevenLabs(
     api_key= os.getenv('ELEVEN_LABS_KEY')
@@ -28,6 +26,7 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 def require_api_key(func):
     def wrapper(*args, **kwargs):
         api_key = request.headers.get('Authorization')
+        logging.info(f"API KEY: {API_KEY}")
         if api_key and api_key == API_KEY:
             logging.info("API key válida recebida")
             return func(*args, **kwargs)
