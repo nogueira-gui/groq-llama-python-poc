@@ -28,8 +28,10 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 
 def require_api_key(func):
     def wrapper(*args, **kwargs):
-        api_key = request.headers.get('Authorization')
-        if api_key and api_key == API_KEY:
+        auth = request.headers.get('Authorization')
+        logging.info(f"api_key recebida: {auth}")
+        logging.info(f"API_KEY ARMAZENADA: {API_KEY}")
+        if auth and auth == API_KEY:
             logging.info("API key válida recebida")
             return func(*args, **kwargs)
         else:
