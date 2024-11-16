@@ -20,18 +20,18 @@ provider "aws" {
 #   })
 # }
 
-# # Política gerenciada do SSM Parameter Store anexada à Role
-# resource "aws_iam_policy_attachment" "ssm_policy" {
-#   name       = "ssm-policy-attachment"
-#   roles      = [aws_iam_role.ec2_ssm_role.name]
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMFullAccess"
-# }
+# Política gerenciada do SSM Parameter Store anexada à Role
+resource "aws_iam_policy_attachment" "ssm_policy" {
+  name       = "ssm-policy-attachment"
+  roles      = [aws_iam_role.ec2_ssm_role.name]
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMFullAccess"
+}
 
-# # Perfil de instância para anexar a Role à EC2
-# resource "aws_iam_instance_profile" "ec2_instance_profile" {
-#   name = "ec2-instance-profile"
-#   role = aws_iam_role.ec2_ssm_role.name
-# }
+# Perfil de instância para anexar a Role à EC2
+resource "aws_iam_instance_profile" "ec2_instance_profile" {
+  name = "ec2-instance-profile"
+  role = aws_iam_role.ec2_ssm_role.name
+}
 
 data "aws_security_group" "existing_sg" {
   filter {
