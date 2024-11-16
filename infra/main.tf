@@ -70,7 +70,7 @@ resource "aws_instance" "ec2" {
   instance_type          = "t2.micro"
   user_data              = file("user_data.sh")
   iam_instance_profile = "ec2-instance-profile"
-  vpc_security_group_ids = [data.existing_sg.id]
+  vpc_security_group_ids = [data.aws_security_group.existing_sg.id]
 }
 
 output "public_ip" {
