@@ -23,7 +23,7 @@ provider "aws" {
 # Política gerenciada do SSM Parameter Store anexada à Role
 resource "aws_iam_policy_attachment" "ssm_policy" {
   name       = "ssm-policy-attachment"
-  roles      = [aws_iam_role.ec2_ssm_role.name]
+  roles      = ["ec2-ssm-role"]
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMFullAccess"
 }
 
