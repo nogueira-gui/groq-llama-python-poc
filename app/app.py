@@ -1,23 +1,26 @@
 import logging
 from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
-from dotenv import load_dotenv
 from groq import Groq
 from elevenlabs import ElevenLabs, VoiceSettings
 
 import uuid
 import os
 from werkzeug.utils import secure_filename
+from secrets import retrieve_secrets_from_ssm
 from stages import stages
 
 # Configuração de logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-load_dotenv()
-API_KEY = os.getenv('API_KEY')
+secrets = retrieve_secrets_from_ssm()
+
+GROQ_API_KEY = secrets['GROQ_API_KEY']
+API_KEY = secrets['API_KEY']
+ELEVEN_LABS_KEY = secrets['ELEVEN_LABS_KEY']
 
 eleven_labs_client = ElevenLabs(
-    api_key= os.getenv('ELEVEN_LABS_KEY')
+    api_key= ELEVEN_LABS_KEY
 )
 
 app = Flask(__name__)
@@ -73,7 +76,7 @@ def conversation_message():
         return jsonify({"error": f"Failed to save audio file: {e}"}), 500
 
     # Transcreve o áudio usando a API do Groq
-    groq_client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+    groq_client = Groq(api_key=GROQ_API_KEY)
     try:
         with open(audio_path, "rb") as file:
             transcription = groq_client.audio.transcriptions.create(

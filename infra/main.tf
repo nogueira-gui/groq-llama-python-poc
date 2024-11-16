@@ -2,6 +2,37 @@ provider "aws" {
   region = "us-east-1"
 }
 
+
+# Role para a instância EC2
+resource "aws_iam_role" "ec2_ssm_role" {
+  name               = "ec2-ssm-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect    = "Allow",
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+# Política gerenciada do SSM Parameter Store anexada à Role
+resource "aws_iam_policy_attachment" "ssm_policy" {
+  name       = "ssm-policy-attachment"
+  roles      = [aws_iam_role.ec2_ssm_role.name]
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMFullAccess"
+}
+
+# Perfil de instância para anexar a Role à EC2
+resource "aws_iam_instance_profile" "ec2_instance_profile" {
+  name = "ec2-instance-profile"
+  role = aws_iam_role.ec2_ssm_role.name
+}
+
 data "aws_security_group" "existing_sg" {
   filter {
     name   = "group-name"
@@ -34,13 +65,14 @@ data "aws_security_group" "existing_sg" {
 #   }
 # }
 
-# resource "aws_instance" "ec2" {
-#   ami                    = "ami-012967cc5a8c9f891"
-#   instance_type          = "t2.micro"
-#   user_data              = file("user_data.sh")
-#   vpc_security_group_ids = [data.aws_security_group.existing_sg.id]
-# }
+resource "aws_instance" "ec2" {
+  ami                    = "ami-012967cc5a8c9f891"
+  instance_type          = "t2.micro"
+  user_data              = file("user_data.sh")
+  iam_instance_profile    = aws_iam_instance_profile.ec2_instance_profile.name
+  vpc_security_group_ids = [data.aws_security_group.existing_sg.id]
+}
 
-# output "public_ip" {
-#   value = aws_instance.ec2.public_ip
-# }
+output "public_ip" {
+  value = aws_instance.ec2.public_ip
+}
