@@ -1,7 +1,0 @@
-flask
-groq
-python-dotenv
-elevenlabs
-openai
-flask_cors
-boto3
