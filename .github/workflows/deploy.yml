@@ -1,0 +1,60 @@
+name: "Deploy Workflow"
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+
+jobs:
+  deploy-to-eb:
+    runs-on: ubuntu-latest
+    # Opcional: adicionar permissões se necessário
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker Image
+        run: |
+          docker build -t triagem_facil_web .
+
+      - name: Generate deployment package
+        run: |
+          # Criar pasta temporária para os arquivos
+          mkdir -p deploy_package
+          
+          # Copiar arquivos necessários excluindo .github e infra
+          rsync -av --progress ./ ./deploy_package \
+            --exclude='.git*' \
+            --exclude='infra' \
+            --exclude='deploy_package'
+          
+          # Criar arquivo zip
+          cd deploy_package && zip -r ../deploy.zip .
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: us-east-1
+
+      - name: Upload to S3
+        run: |
+          aws s3 cp deploy.zip s3://elasticbeanstalk-us-east-1-698974420629/deploy.zip
+
+      - name: Create new Elastic Beanstalk version
+        run: |
+          aws elasticbeanstalk create-application-version \
+            --application-name "easytriage-server" \
+            --version-label "ver-${{ github.sha }}" \
+            --source-bundle S3Bucket="elasticbeanstalk-us-east-1-698974420629",S3Key="deploy.zip"
+
+      - name: Deploy to Elastic Beanstalk
+        run: |
+          aws elasticbeanstalk update-environment \
+            --environment-name "Easytriage-server-dev" \
+            --version-label "ver-${{ github.sha }}"

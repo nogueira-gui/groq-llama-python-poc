@@ -18,11 +18,11 @@ jobs:
             aws-region: 'us-east-1'
             aws-statefile-s3-bucket: 'nogueira-gui-terraform-state-bucket'
             aws-lock-dynamodb-table: 'pipeline-nogueira-gui-terraform-lock'
-    buildrun:
-        uses: ./.github/workflows/buildrun.yml
+    deploy:
+        uses: ./.github/workflows/deploy.yml
         needs: terraform
         with:
             environment: 'dev'
         secrets:
-            DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-            DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
