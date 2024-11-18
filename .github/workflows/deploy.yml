@@ -38,19 +38,24 @@ jobs:
           role-to-assume: 'arn:aws:iam::698974420629:role/github-actions-pipeline'
           aws-region: us-east-1
 
+      - name: Generate version label
+        id: version
+        run: |
+          echo "version=$(date +'%Y%m%d-%H%M%S')-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+  
       - name: Upload to S3
         run: |
-          aws s3 cp deploy.zip s3://elasticbeanstalk-us-east-1-698974420629/deploy.zip
-
+          aws s3 cp deploy.zip "s3://elasticbeanstalk-us-east-1-698974420629/deploy-${{ steps.version.outputs.version }}.zip"
+  
       - name: Create new Elastic Beanstalk version
         run: |
           aws elasticbeanstalk create-application-version \
             --application-name "easytriage-server" \
-            --version-label "ver-${{ github.sha }}" \
-            --source-bundle S3Bucket="elasticbeanstalk-us-east-1-698974420629",S3Key="deploy.zip"
-
+            --version-label "${{ steps.version.outputs.version }}" \
+            --source-bundle S3Bucket="elasticbeanstalk-us-east-1-698974420629",S3Key="deploy-${{ steps.version.outputs.version }}.zip"
+  
       - name: Deploy to Elastic Beanstalk
         run: |
           aws elasticbeanstalk update-environment \
             --environment-name "Easytriage-server-dev" \
-            --version-label "ver-${{ github.sha }}"
+            --version-label "${{ steps.version.outputs.version }}"
