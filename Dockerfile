@@ -1,5 +1,5 @@
 # Use uma imagem Python como base
-FROM python:3.11-slim
+FROM python:3.14.0a1-slim
 
 # Define a variável de ambiente para o Flask, apontando para o caminho completo
 ENV FLASK_APP=app.py
