@@ -50,12 +50,12 @@ jobs:
       - name: Create new Elastic Beanstalk version
         run: |
           aws elasticbeanstalk create-application-version \
-            --application-name "easytriage-server" \
+            --application-name "docker-flask-app" \
             --version-label "${{ steps.version.outputs.version }}" \
             --source-bundle S3Bucket="elasticbeanstalk-us-east-1-698974420629",S3Key="deploy-${{ steps.version.outputs.version }}.zip"
   
       - name: Deploy to Elastic Beanstalk
         run: |
           aws elasticbeanstalk update-environment \
-            --environment-name "Easytriage-server-dev" \
+            --environment-name "Docker-flask-app-env" \
             --version-label "${{ steps.version.outputs.version }}"
