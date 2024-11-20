@@ -33,12 +33,12 @@ provider "aws" {
 #   role = "ec2-ssm-role"
 # }
 
-data "aws_security_group" "existing_sg" {
-  filter {
-    name   = "group-name"
-    values = ["ec2-securitygroup"]
-  }
-}
+#data "aws_security_group" "existing_sg" {
+ # filter {
+ #   name   = "group-name"
+ #   values = ["ec2-securitygroup"]
+ # }
+#}
 # resource "aws_security_group" "securitygroup" {
 #   name        = "ec2-securitygroup"
 #   description = "Ingress Http and SSH and Egress to anywhere"
