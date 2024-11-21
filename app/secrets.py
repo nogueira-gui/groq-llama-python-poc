@@ -2,7 +2,17 @@ import os
 import boto3
 from botocore.exceptions import ClientError
 
+
+def get_secrets_from_env(keys):
+    return {key: os.environ[key] for key in keys if key in os.environ}
+
 def retrieve_secrets_from_ssm():
+    keys = ['GROQ_API_KEY', 'API_KEY', 'ELEVEN_LABS_KEY']
+    secrets = get_secrets_from_env(keys)
+
+    if all(key in secrets for key in keys):
+        return secrets
+        
     secrets = {
         'GROQ_API_KEY': '/easytriage/GROQ_API_KEY',
         'API_KEY': '/easytriage/API_KEY',
@@ -11,15 +21,12 @@ def retrieve_secrets_from_ssm():
 
     region_name = "us-east-1"
 
-    # Cliente para o SSM
     ssm_client = boto3.client('ssm', region_name=region_name)
 
-    # Dicionário para armazenar os valores dos segredos recuperados
     retrieved_secrets = {}
 
     for secret_name, parameter_name in secrets.items():
         try:
-            # Recupera o valor do parâmetro de forma simples
             response = ssm_client.get_parameter(Name=parameter_name, WithDecryption=True)
             parameter_value = response['Parameter']['Value']
             os.environ[secret_name] = parameter_value
@@ -30,5 +37,4 @@ def retrieve_secrets_from_ssm():
         except Exception as e:
             print(f"Erro ao recuperar o parâmetro {parameter_name}: {e}")
 
-    # Retorna os segredos recuperados
     return retrieved_secrets

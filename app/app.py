@@ -26,6 +26,14 @@ eleven_labs_client = ElevenLabs(
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
+@app.route("/health", methods=["GET"])
+def health_check():
+    try:
+        return jsonify({"status": "healthy"}), 200
+    except Exception as e:
+        logging.error(f"Erro na checagem de saúde: {e}")
+        return jsonify({"error": "Unhealthy"}), 500
+
 def require_api_key(func):
     def wrapper(*args, **kwargs):
         auth = request.headers.get('Authorization')
@@ -148,6 +156,7 @@ def check_response_correctness(stage_id, response_text):
 
 
 @app.route("/speak", methods=["POST"])
+@require_api_key
 def text_to_speech():
     audio = speech_with_eleven_labs(request.form.get('message'))
     return Response(audio, mimetype="audio/wav")
