@@ -164,6 +164,19 @@ def check_response_correctness(stage_id, response_text):
     return True
 
 
+def speech_with_eleven_labs(message, tts_config):
+    return eleven_labs_client.text_to_speech.convert_as_stream(
+        voice_id=tts_config['voice_id'],
+        optimize_streaming_latency=tts_config['optimize_streaming_latency'],
+        output_format=tts_config['output_format'],
+        text=message,
+        voice_settings=VoiceSettings(
+            stability=tts_config['voice_settings']['stability'],
+            similarity_boost=tts_config['voice_settings']['similarity'],
+            style=tts_config['voice_settings']['style']
+        )
+    )
+
 @app.route("/speak", methods=["POST"])
 @require_api_key
 def text_to_speech():
@@ -172,26 +185,13 @@ def text_to_speech():
         'optimize_streaming_latency': request.form.get('optimizeStreamingLatency', "0"),
         'output_format': request.form.get('outputFormat', "mp3_22050_32"),
         'voice_settings': {
-            'stability': request.form.get('voiceStability', 0.1),
-            'similarity': request.form.get('voiceSimilarity', 0.3),
-            'style': request.form.get('voiceStyle', 0.2)
+            'stability': float(request.form.get('voiceStability', 0.1)),
+            'similarity': float(request.form.get('voiceSimilarity', 0.3)),
+            'style': float(request.form.get('voiceStyle', 0.2))
         }
     }
     audio = speech_with_eleven_labs(request.form.get('message'), tts_config)
     return Response(audio, mimetype="audio/wav")
-
-def speech_with_eleven_labs(message, tts_config):
-    return eleven_labs_client.text_to_speech.convert_as_stream(
-        voice_id=tts_config['voice_id'],
-        optimize_streaming_latency=tts_config['optimize_streaming_latency'],
-        output_format=tts_config['output_format'],
-        text=message,
-        voice_settings=VoiceSettings(
-            stability=tts_config['voice_settings']['stability']
-            similarity_boost=tts_config['voice_settings']['similarity'],
-            style=tts_config['voice_settings']['style']
-        )
-    )
 
 
 if __name__ == '__main__':
