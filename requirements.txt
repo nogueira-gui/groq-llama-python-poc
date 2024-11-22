@@ -1,3 +1,0 @@
-flask
-groq
-python-dotenv

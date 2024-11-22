@@ -18,3 +18,8 @@ jobs:
             aws-region: 'us-east-1'
             aws-statefile-s3-bucket: 'nogueira-gui-terraform-state-bucket'
             aws-lock-dynamodb-table: 'pipeline-nogueira-gui-terraform-lock'
+    deploy:
+        uses: ./.github/workflows/deploy.yml
+        needs: terraform
+        with:
+            environment: 'dev'

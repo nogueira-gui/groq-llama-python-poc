@@ -1,142 +1,200 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+import logging
+from flask import Flask, request, jsonify, Response
+from flask_cors import CORS
+from groq import Groq
+from elevenlabs import ElevenLabs, VoiceSettings
+
+import uuid
 import os
-from groq_service import call_groq
+from werkzeug.utils import secure_filename
+from secrets import retrieve_secrets_from_ssm
+from stages import stages
+
+# Configuração de logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+secrets = retrieve_secrets_from_ssm()
+
+GROQ_API_KEY = secrets['GROQ_API_KEY']
+API_KEY = secrets['API_KEY']
+ELEVEN_LABS_KEY = secrets['ELEVEN_LABS_KEY']
+
+eleven_labs_client = ElevenLabs(
+    api_key= ELEVEN_LABS_KEY
+)
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
-@app.route('/')
-def home():
-    return render_template('emergency_screen.html')
-
-@app.route('/vitals', methods=['GET', 'POST'])
-def vitals():
-    return render_template('vitals_form.html')
-
-@app.route('/emergency', methods=['GET', 'POST'])
-def emergency():
-    if request.method == 'POST':
-        is_emergency = request.form.get('emergency')
-        if is_emergency == 'yes':
-            return redirect(url_for('vitals'))
-        else:
-            return redirect(url_for('anamnesis'))
-
-@app.route('/anamnesis', methods=['GET','POST'])
-def anamnesis():
-    return render_template('anamnesis_form.html')
-
-def run_llm_model(patient_context_prompt):
-    # Avalia detalhes do paciente
-    result = call_groq(patient_context_prompt)
-    # Gera a prioridade usando uma chamada específica para classificação
-    priority = call_groq(f"Answer only with the color name to classify as Red, Yellow, or Green for the result: {result}")
-    return {
-        'result': result,
-        'priority': priority
-    }
-
-def generate_prompt_from_vitals_form(request):
-    heart_rate = request.form.get('heart_rate')
-    blood_pressure = request.form.get('blood_pressure')
-    temperature = request.form.get('temperature')
-    respiratory_rate = request.form.get('respiratory_rate')
-    glucose_level = request.form.get('glucose_level')
-    iv_access = request.form.get('iv_access')
-    cardiac_arrest = request.form.get('cardiac_arrest')
-    fractures = request.form.get('fractures')
-    external_bleeding = request.form.get('external_bleeding')
-
-    prompt = f"Patient with vital signs: \n"
-    if heart_rate:
-        prompt += f"Heart rate: {heart_rate}, \n"
-    if blood_pressure:
-        prompt += f"Blood pressure: {blood_pressure}, \n"
-    if temperature:
-        prompt += f"Temperature: {temperature},\n"
-    if respiratory_rate:
-        prompt += f"Respiratory rate: {respiratory_rate}, \n"
-    if glucose_level:
-        prompt += f"Glucose level: {glucose_level},\n"
-    if iv_access:
-        prompt += f"IV access: {iv_access}, \n"
-    if cardiac_arrest:
-        prompt += f"Cardiac arrest: {cardiac_arrest},\n" 
-    if fractures:
-        prompt += f"Fractures: {fractures}, \n"
-    if external_bleeding:
-        prompt += f"External bleeding: {external_bleeding}."
+@app.route("/", methods=["GET"])
+def health_check():
+    try:
+        return jsonify({"status": "healthy"}), 200
+    except Exception as e:
+        logging.error(f"Erro na checagem de saúde: {e}")
+        return jsonify({"error": "Unhealthy"}), 500
     
-    return prompt
+@app.route("/.well-known/pki-validation/C52A7DADCA4E70D7A748F6DDA6BC89C4.txt")
+def verify():
+    return '''97AF1512DBFEA565E270622FF55592C94A4D21B759CAC94D0583FAB92B073013
+comodoca.com
+eb6a05ae2173450'''
 
-def generate_prompt_from_anamnesis_form(request):
-    if request.method == 'POST':
-        name = request.form['nome']
-        age = request.form['idade']
+def require_api_key(func):
+    def wrapper(*args, **kwargs):
+        auth = request.headers.get('Authorization')
+        if auth and auth == API_KEY:
+            logging.info("API key válida recebida")
+            return func(*args, **kwargs)
+        else:
+            logging.warning("Tentativa de acesso não autorizada")
+            return jsonify({"error": "Unauthorized"}), 401
+    wrapper.__name__ = func.__name__
+    return wrapper
 
-        vital_data = {}
-        if request.form['blood_pressure']:
-            vital_data['blood_pressure'] = request.form['blood_pressure']
-        if request.form['heart_rate']:
-            vital_data['heart_rate'] = request.form['heart_rate']
-        if request.form['respiratory_rate']:
-            vital_data['respiratory_rate'] = request.form['respiratory_rate']
-        if request.form['glucose_level']:
-            vital_data['glucose_level'] = request.form['glucose_level']
-        if request.form['fever']:
-            vital_data['fever'] = request.form['fever']
+@app.route('/conversation/session', methods=['GET'])
+@require_api_key
+def conversation_session():
+    session_id = str(uuid.uuid4())
+    logging.info(f"Nova sessão criada: {session_id}")
+    response = {
+        "sessionId": session_id,
+    }
+    return jsonify(response)
 
-        medical_history = {}
-        if request.form['doencas_cronicas']:
-            medical_history['chronic_diseases'] = request.form['doencas_cronicas']
-        if request.form['medicamentos']:
-            medical_history['medications'] = request.form['medicamentos']
-        if request.form['alergias']:
-            medical_history['allergies'] = request.form['alergias']
-        if request.form['local_dor']:
-            medical_history['pain_location'] = request.form['local_dor']
+@app.route('/conversation/message', methods=['POST'])
+@require_api_key
+def conversation_message():
+    session_id = request.form.get('sessionId')
+    stage_id = request.form.get('stageId', 'NOME')
+    audio_file = request.files.get('audioFile')
+    text_model_id = request.form.get('textModelId', 'llama-3.2-3b-preview')
+    transcript_model_id = request.form.get('transcriptModelId', 'whisper-large-v3-turbo')
+    language_transcript = request.form.get('languageTranscript', 'pt')
 
-        difficulties = {}
-        if request.form.get('respirar'):
-            difficulties['breathing'] = request.form['respirar']
-        if request.form.get('engolir'):
-            difficulties['swallowing'] = request.form['engolir']
-        if request.form.get('movimentar'):
-            difficulties['moving'] = request.form['movimentar']
-        if request.form.get('alimentar'):
-            difficulties['eating'] = request.form['alimentar']
-        if request.form.get('hidratar'):
-            difficulties['hydrating'] = request.form['hidratar']
-        if request.form.get('miccao'):
-            difficulties['urination'] = request.form['miccao']
-        if request.form.get('evacuacao'):
-            difficulties['bowel_movement'] = request.form['evacuacao']
+    if not audio_file:
+        logging.error("Arquivo de áudio ausente na solicitação")
+        return jsonify({"error": "Audio file is required"}), 400
 
-        signs = {}
-        if request.form.get('ansiedade'):
-            signs['anxiety'] = request.form.get('ansiedade')
-        if request.form.get('estresse'):
-            signs['stress'] = request.form.get('estresse')
-        if request.form.get('depressao'):
-            signs['depression'] = request.form.get('depressao')
+    # Código para salvar e transcrever o áudio
+    audio_directory = 'audio'
+    if not os.path.exists(audio_directory):
+        os.makedirs(audio_directory)
+        logging.info(f"Diretório de áudio '{audio_directory}' criado")
 
-        prompt = f'''
-        Patient: {name}, {age} years old.
-        Vital signs: {vital_data}.
-        Medical history: {medical_history}.
-        Difficulties: {difficulties}.
-        Signs: {signs}.
-        '''
-        return prompt
+    audio_filename = f"{uuid.uuid4()}.mp3"
+    audio_path = os.path.join(audio_directory, secure_filename(audio_filename))
 
-@app.route('/result', methods=['GET', 'POST'])
-def result_screen():
-    if request.method == 'POST':
-        if request.form.get('form_id') == 'vitals_form':
-            patient_context_prompt = generate_prompt_from_vitals_form(request)
-        elif request.form.get('form_id') == 'anamnesis_form':
-            patient_context_prompt = generate_prompt_from_anamnesis_form(request)
-        data = run_llm_model(patient_context_prompt)
-    return render_template('result_screen.html', result=data['result'], priority=data['priority'])
+    try:
+        audio_file.save(audio_path)
+        logging.info(f"Áudio salvo com sucesso em {audio_path}")
+    except Exception as e:
+        logging.error(f"Falha ao salvar o arquivo de áudio: {e}")
+        return jsonify({"error": f"Failed to save audio file: {e}"}), 500
+
+    # Transcreve o áudio usando a API do Groq
+    groq_client = Groq(api_key=GROQ_API_KEY)
+    try:
+        with open(audio_path, "rb") as file:
+            transcription = groq_client.audio.transcriptions.create(
+                file=(audio_path, file.read()),
+                model= transcript_model_id,
+                response_format="json",
+                language=language_transcript
+            )
+        transcripted_audio = transcription.text
+        logging.info("Transcrição de áudio concluída")
+    except Exception as e:
+        logging.error(f"Erro na transcrição do áudio: {e}")
+        return jsonify({"error": f"Transcription failed: {e}"}), 500
+
+    # Gera a resposta com base na etapa atual
+    context = get_stage_context(stage_id)
+    ai_response = call_groq(groq_client, context, transcripted_audio, text_model_id)
+
+    # Verifica se a resposta está correta para avançar para a próxima etapa
+    is_correct = check_response_correctness(stage_id, transcripted_audio)
+
+    next_stage = stages[stage_id]["next"] if is_correct and "next" in stages[stage_id] else stage_id
+    logging.info(f"Próxima etapa: {next_stage}")
+
+    response = {
+        "sessionId": session_id,
+        "transcription": ai_response,
+        "nextStage": next_stage
+    }
+    logging.info(f"Resposta gerada para a sessão {session_id} na etapa {stage_id}")
+    return jsonify(response)
+
+def call_groq(client, context, user_input, text_model_id): 
+    try:
+        chat_completion = client.chat.completions.create(
+            messages=[
+                {
+                    "role": "system",
+                    "content": context
+                },
+                {
+                    "role": "user",
+                    "content": user_input
+                }
+            ],
+            model=text_model_id
+        )
+        logging.info("Resposta da IA gerada com sucesso")
+        return chat_completion.choices[0].message.content
+    except Exception as e:
+        logging.error(f"Erro ao chamar o modelo Groq: {e}")
+        return "Erro ao gerar resposta da IA"
+
+# Função para obter mensagem da etapa atual
+def get_stage_context(stage_id):
+    stage = stages.get(stage_id)
+    if stage:
+        logging.info(f"Contexto para a etapa {stage_id} obtido")
+        return stage["context"]
+    logging.warning(f"Etapa desconhecida: {stage_id}")
+    return "Etapa desconhecida."
+
+# Função para verificar a resposta com base na lógica da etapa
+def check_response_correctness(stage_id, response_text):
+    # Lógica de verificação de resposta para cada etapa
+    logging.info(f"Verificação da resposta para a etapa {stage_id}")
+    return True
+
+
+def speech_with_eleven_labs(message, tts_config):
+    return eleven_labs_client.text_to_speech.convert_as_stream(
+        voice_id=tts_config['voice_id'],
+        optimize_streaming_latency=tts_config['optimize_streaming_latency'],
+        output_format=tts_config['output_format'],
+        text=message,
+        voice_settings=VoiceSettings(
+            stability=tts_config['voice_settings']['stability'],
+            similarity_boost=tts_config['voice_settings']['similarity'],
+            style=tts_config['voice_settings']['style'],
+            use_speaker_boost=tts_config['voice_settings']['use_speaker_boost']
+        )
+    )
+
+@app.route("/speak", methods=["POST"])
+@require_api_key
+def text_to_speech():
+    tts_config = {
+        'voice_id': request.form.get('voiceId', 'cyD08lEy76q03ER1jZ7y'),
+        'optimize_streaming_latency': request.form.get('optimizeStreamingLatency', "0"),
+        'output_format': request.form.get('outputFormat', "mp3_22050_32"),
+        'voice_settings': {
+            'stability': float(request.form.get('voiceStability', 0.1)),
+            'similarity': float(request.form.get('voiceSimilarity', 0.3)),
+            'style': float(request.form.get('voiceStyle', 0.2)),
+            'use_speaker_boost': bool(request.form.get('useSpeakerBoost', False))
+        }
+    }
+    audio = speech_with_eleven_labs(request.form.get('message'), tts_config)
+    return Response(audio, mimetype="audio/wav")
+
 
 if __name__ == '__main__':
-    app.run(host=os.getenv("HOST", "0.0.0.0"), port=5000)
+    logging.info("Iniciando o servidor Flask")
+    app.run()
