@@ -2,6 +2,7 @@
 
 ## Índice
 - [Descrição Geral](#descrição-geral)
+- [Equipe](#equipe)
 - [Requisitos](#requisitos)
 - [Configuração e Instalação](#configuração-e-instalação)
 - [Arquitetura](#arquitetura)
@@ -14,6 +15,15 @@
 
 ## Descrição Geral
 O **EasyTriage** é uma aplicação progressiva (PWA) desenvolvida para auxiliar triagens em atendimentos de saúde. 
+
+Foi criado durante o **LLama Impact Hackathon Brazil**, realizado em novembro de 2024, um evento que desafiou as equipes participantes a desenvolver soluções inovadoras para problemas sociais e ambientais em apenas 24 horas.
+
+## Equipe
+Este projeto foi desenvolvido em colaboração por:
+- **Victoria Cavalcante**
+- **Lara Gonçalves da Silva**
+- **Guilherme Nogueira**
+- **Alberto Henrique Cordeiro**
 
 - **Frontend:** Construído com Next.js, acessível publicamente:
   - **Repositório:** [EasyTriage Frontend](https://github.com/nogueira-gui/easytriage-nextjs-pwa)
