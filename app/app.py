@@ -43,7 +43,6 @@ eb6a05ae2173450'''
 def require_api_key(func):
     def wrapper(*args, **kwargs):
         auth = request.headers.get('Authorization')
-        logging.info(f"headers: {request.headers}")
         if auth and auth == API_KEY:
             logging.info("API key válida recebida")
             return func(*args, **kwargs)
