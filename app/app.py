@@ -173,7 +173,8 @@ def speech_with_eleven_labs(message, tts_config):
         voice_settings=VoiceSettings(
             stability=tts_config['voice_settings']['stability'],
             similarity_boost=tts_config['voice_settings']['similarity'],
-            style=tts_config['voice_settings']['style']
+            style=tts_config['voice_settings']['style'],
+            use_speaker_boost=tts_config['voice_settings']['use_speaker_boost']
         )
     )
 
@@ -187,7 +188,8 @@ def text_to_speech():
         'voice_settings': {
             'stability': float(request.form.get('voiceStability', 0.1)),
             'similarity': float(request.form.get('voiceSimilarity', 0.3)),
-            'style': float(request.form.get('voiceStyle', 0.2))
+            'style': float(request.form.get('voiceStyle', 0.2)),
+            'use_speaker_boost': bool(request.form.get('useSpeakerBoost', False))
         }
     }
     audio = speech_with_eleven_labs(request.form.get('message'), tts_config)
