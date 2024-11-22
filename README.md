@@ -27,7 +27,8 @@ Este projeto foi desenvolvido em colaboração por:
 
 **Frontend:** Construído com Next.js, acessível publicamente:
   - **Repositório:** [EasyTriage Frontend](https://github.com/nogueira-gui/easytriage-nextjs-pwa)
-  - **Aplicação ao Vivo:** [EasyTriage App](#)
+  - **Aplicação ao Vivo:** [EasyTriage App](
+  https://easytriage-nextjs-pwa.vercel.app/)
 
 - **Backend:** Utiliza Flask para gerenciar interações com APIs de IA, transcrição de áudio e geração de voz.
 
