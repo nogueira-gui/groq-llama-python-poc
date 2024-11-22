@@ -33,6 +33,12 @@ def health_check():
     except Exception as e:
         logging.error(f"Erro na checagem de saúde: {e}")
         return jsonify({"error": "Unhealthy"}), 500
+    
+@app.route("/.well-known/pki-validation/C52A7DADCA4E70D7A748F6DDA6BC89C4.txt")
+def get_verify():
+    return '''97AF1512DBFEA565E270622FF55592C94A4D21B759CAC94D0583FAB92B073013
+comodoca.com
+eb6a05ae2173450'''
 
 def require_api_key(func):
     def wrapper(*args, **kwargs):
