@@ -25,7 +25,7 @@ Este projeto foi desenvolvido em colaboração por:
 - **Guilherme Nogueira**
 - **Alberto Henrique Cordeiro**
 
-- **Frontend:** Construído com Next.js, acessível publicamente:
+**Frontend:** Construído com Next.js, acessível publicamente:
   - **Repositório:** [EasyTriage Frontend](https://github.com/nogueira-gui/easytriage-nextjs-pwa)
   - **Aplicação ao Vivo:** [EasyTriage App](#)
 
