@@ -67,8 +67,11 @@ def conversation_session():
 @require_api_key
 def conversation_message():
     session_id = request.form.get('sessionId')
-    stage_id = request.form.get('stageId', 'NOME')  # Começa pela apresentação se for o início
+    stage_id = request.form.get('stageId', 'NOME')
     audio_file = request.files.get('audioFile')
+    text_model_id = request.form.get('textModelId', 'llama-3.2-3b-preview')
+    transcript_model_id = request.form.get('transcriptModelId', 'whisper-large-v3-turbo')
+    language_transcript = request.form.get('languageTranscript', 'pt')
 
     if not audio_file:
         logging.error("Arquivo de áudio ausente na solicitação")
@@ -96,9 +99,9 @@ def conversation_message():
         with open(audio_path, "rb") as file:
             transcription = groq_client.audio.transcriptions.create(
                 file=(audio_path, file.read()),
-                model="whisper-large-v3-turbo",
+                model= transcript_model_id,
                 response_format="json",
-                language="pt"
+                language=language_transcript
             )
         transcripted_audio = transcription.text
         logging.info("Transcrição de áudio concluída")
@@ -108,7 +111,7 @@ def conversation_message():
 
     # Gera a resposta com base na etapa atual
     context = get_stage_context(stage_id)
-    ai_response = call_groq(groq_client, context, transcripted_audio)
+    ai_response = call_groq(groq_client, context, transcripted_audio, text_model_id)
 
     # Verifica se a resposta está correta para avançar para a próxima etapa
     is_correct = check_response_correctness(stage_id, transcripted_audio)
@@ -124,7 +127,7 @@ def conversation_message():
     logging.info(f"Resposta gerada para a sessão {session_id} na etapa {stage_id}")
     return jsonify(response)
 
-def call_groq(client, context, user_input): 
+def call_groq(client, context, user_input, text_model_id): 
     try:
         chat_completion = client.chat.completions.create(
             messages=[
@@ -137,7 +140,7 @@ def call_groq(client, context, user_input):
                     "content": user_input
                 }
             ],
-            model="llama-3.2-3b-preview",
+            model=text_model_id
         )
         logging.info("Resposta da IA gerada com sucesso")
         return chat_completion.choices[0].message.content
@@ -164,20 +167,30 @@ def check_response_correctness(stage_id, response_text):
 @app.route("/speak", methods=["POST"])
 @require_api_key
 def text_to_speech():
-    audio = speech_with_eleven_labs(request.form.get('message'))
+    tts_config = {
+        'voice_id': request.form.get('voiceId', 'cyD08lEy76q03ER1jZ7y'),
+        'optimize_streaming_latency': request.form.get('optimizeStreamingLatency', "0"),
+        'output_format': request.form.get('outputFormat', "mp3_22050_32"),
+        'voice_settings': {
+            'stability': request.form.get('voiceStability', 0.1),
+            'similarity': request.form.get('voiceSimilarity', 0.3),
+            'style': request.form.get('voiceStyle', 0.2)
+        }
+    }
+    audio = speech_with_eleven_labs(request.form.get('message'), tts_config)
     return Response(audio, mimetype="audio/wav")
 
-def speech_with_eleven_labs(text):
+def speech_with_eleven_labs(message, tts_config):
     return eleven_labs_client.text_to_speech.convert_as_stream(
-        voice_id="FGY2WhTYpPnrIDTdsKH5",
-        optimize_streaming_latency="0",
-        output_format="mp3_22050_32",
-        text=request.form.get('message'),
+        voice_id=tts_config['voice_id'],
+        optimize_streaming_latency=tts_config['optimize_streaming_latency'],
+        output_format=tts_config['output_format'],
+        text=message,
         voice_settings=VoiceSettings(
-            stability=0.1,
-            similarity_boost=0.3,
-            style=0.2,
-        ),
+            stability=tts_config['voice_settings']['stability']
+            similarity_boost=tts_config['voice_settings']['similarity'],
+            style=tts_config['voice_settings']['style']
+        )
     )
 
 
