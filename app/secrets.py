@@ -3,7 +3,15 @@ import boto3
 from botocore.exceptions import ClientError
 
 
+def get_secrets_from_env(keys):
+    return {key: os.environ[key] for key in keys if key in os.environ}
+
 def retrieve_secrets_from_ssm():
+    keys = ['GROQ_API_KEY', 'API_KEY', 'ELEVEN_LABS_KEY']
+    secrets = get_secrets_from_env(keys)
+
+    if all(key in secrets for key in keys):
+        return secrets
         
     secrets = {
         'GROQ_API_KEY': '/easytriage/GROQ_API_KEY',
